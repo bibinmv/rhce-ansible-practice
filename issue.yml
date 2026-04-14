@@ -1,0 +1,23 @@
+---
+- name: modify file content
+  hosts: all
+  tasks:
+    - name: replace inline content in dev
+      ansible.builtin.copy:
+        content: 'Development'
+        dest: /etc/issue
+      when: "inventory_hostname in groups.dev"
+
+    - name: replace inline content in test
+      ansible.builtin.copy:
+        content: 'Test'
+        dest: /etc/issue
+      when: "inventory_hostname in groups.test"
+    - name: replace inline content in prod
+      ansible.builtin.copy:
+        content: 'Production'
+        dest: /etc/issue
+      when: "inventory_hostname in groups.prod"
+
+
+

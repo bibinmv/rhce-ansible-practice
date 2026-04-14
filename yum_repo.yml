@@ -1,0 +1,23 @@
+---
+- name: Create yum repository in all machines
+  hosts: all
+  tasks:
+    - name: create EX294_BASE repository
+      ansible.builtin.yum_repository:    
+        name: BaseOS
+        file: yum
+        description: EX294 base software
+        enabled: yes
+        baseurl: (given in question)
+        gpgcheck: yes
+        ggpkey: (given in question)
+
+    - name: create EX294_APP repository
+      ansible.builtin.yum_repository:
+        name: AppStream 
+        file: yum
+        description: EX294 app software
+        enabled: yes
+        baseurl: (given in question)
+        gpgcheck: yes
+        ggpkey: (given in question)

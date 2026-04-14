@@ -1,0 +1,16 @@
+---
+- name: cron job for natasha
+  hosts: all
+  tasks:
+    - name: create user natasha
+      ansible.builtin.user:
+        name: natasha
+        state: present
+
+    - name: Create cron job 
+      ansible.builtin.cron:
+        name: cron job for user natasha
+        user: natasha 
+        minute: "*/2"
+        job: logger "Ex294 in progress"
+        state: present

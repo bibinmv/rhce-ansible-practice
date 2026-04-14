@@ -1,0 +1,26 @@
+---
+- name: Package installation
+  hosts: dev,test,prod
+  tasks:
+    - name: install php and mariadb packages
+      ansible.builtin.yum:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - php
+        - mariadb
+    - name: install package in dev group
+      ansible.builtin.yum:
+        name: "@development tools"
+        state: present
+      when: "'dev' in group_names"
+    - name: update all packages in dev group
+      ansible.builtin.yum:
+        name: "*"
+        state: latest
+      when: "'dev' in group_names"
+
+
+
+
+

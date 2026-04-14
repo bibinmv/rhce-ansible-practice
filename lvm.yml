@@ -1,0 +1,35 @@
+---
+- name: create lvm in all managed hosts
+  hosts: all
+  ignore_errors: yes
+  gather_facts: yes
+  tasks:
+    - name: fail if the VG is not exist
+      ansible.builtin.fail:
+        msg: "volume group not exist"
+      when: ansible_lvm is not defined or 'research'not in ansible_lvm.vgs
+      
+    - name: create lvm with 1500M
+      community.general.lvol:
+        vg: research
+        lv: data
+        size: 1500m
+      register: reg1
+    - name: create lvm with 800M if 1500M fails
+      community.general.lvol:
+        vg: research
+        lv: data
+        size: 800m
+      when: reg1 is failed
+    - name: error message display
+      ansible.builtin.debug:
+        msg: "Could not create a logical volume of that size, and 800 MiB should be used instead"
+      when: reg1 is failed
+    - name: Format the logical volume using the ext4 file system
+      community.general.filesystem:
+        fstype: ext4
+        dev: /dev/research/data
+        
+      
+
+

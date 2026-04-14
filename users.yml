@@ -1,0 +1,44 @@
+---
+- name: User management
+  hosts: dev,test
+  become: true
+  vars_files:
+    - user_list.yml
+    - locker.yml
+  tasks:
+    - name: create a group
+      ansible.builtin.group:
+        name: devops
+        state: present
+    - name: Add the user 
+      ansible.builtin.user:
+        name: "{{item.name}}"
+        uid: "{{item.uid}}"
+        password: "{{pw_developer | password_hash('sha512')}}"
+        group: devops
+        append: yes
+        password_expire_max: 30
+      when: item.job =='developer'
+      loop: "{{users}}"
+  
+- name: User management
+  hosts: prod
+  become: true
+  vars_files:
+    - user_list.yml
+    - locker.yml
+  tasks:
+    - name: create a group
+      ansible.builtin.group:
+        name: opsmgr
+        state: present
+    - name: Add the user 
+      ansible.builtin.user:
+        name: "{{item.name}}"
+        uid: "{{item.uid}}"
+        password: "{{pw_manager | password_hash('sha512')}}"
+        group: opsmgr
+        append: yes
+        password_expire_max: 30
+      when: item.job =='manager'
+      loop: "{{users}}"

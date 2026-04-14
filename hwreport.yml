@@ -1,0 +1,41 @@
+---
+- name: update hwreport
+  hosts: all
+  become: true
+  tasks:
+    - name: download the file
+      ansible.builtin.get_url:
+        url: http://example.com/path/file.conf
+        dest: /root/hwreport.txt
+    - name: Replace old hostname with new hostname
+      ansible.builtin.replace:
+        path: /root/hwreport.txt
+        regexp: 'inventoryhostname'
+        replace: "{{ansible_facts.hostname}}"
+    - name: Replace old total memory with new total memory 
+      ansible.builtin.replace:
+        path: /root/hwreport.txt
+        regexp: 'memory_in_MB'
+        replace: "{{ansible_facts.memtotal_mb}}"
+
+    - name: Replace old BIOS vsersion with new BIOS version 
+      ansible.builtin.replace:
+        path: /root/hwreport.txt
+        regexp: 'BIOS_version'
+        replace: "{{ansible_facts.bios_version}}"
+
+    - name: Replace old SDA with new SDA 
+      ansible.builtin.replace:
+        path: /root/hwreport.txt
+        regexp: 'disk_sda_size'
+        replace: "{{ansible_facts.devices.sda.size | default('NONE')}}"
+
+    - name: Replace old SDB with new SDB
+      ansible.builtin.replace:
+        path: /root/hwreport.txt
+        regexp: 'disk_sdb_size'
+        replace: "{{ansible_facts.devices.sdb.size | default('NONE')}}"  
+
+
+
+   

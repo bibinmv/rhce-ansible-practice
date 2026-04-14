@@ -1,0 +1,49 @@
+---
+- name: create a web content directory
+  hosts: dev
+  tasks:
+    - name: install httpd and firewall
+      ansible.builtin.yum:
+        name: 
+          - httpd
+          - firewalld
+        state: present
+    - name: start and enabled httpd and firewall
+      ansible.builtin.service:
+        name: "{{item}}"
+        state: started
+        enabled: yes
+      loop:
+        - httpd
+        - firewalld    
+    - name: allow http in firewall rule
+      ansible.posix.firewalld:
+        service: http
+        state: enabled
+        permanent: true
+        immediate: true
+    - name: create group
+      ansible.builtin.group:
+        name: webdev
+        state: present
+    - name: create directory
+      ansible.builtin.file:
+        path: /webdev
+        state: directory
+        group: webdev
+        mode: '2775'
+    - name: Create a symbolic link
+      ansible.builtin.file:
+        src: /webdev
+        dest: /var/www/html/webdev
+        state: link
+    - name: add content
+      ansible.builtin.copy:
+        content: 'Development'
+        dest: /webdev/index.html
+        setype: httpd_sys_rw_content_t
+    - name: Allow apache to modify files in sefcontext
+      community.general.sefcontext:
+        target: /webdev/index.html
+        setype: httpd_sys_rw_content_t
+        state: present

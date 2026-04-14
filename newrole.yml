@@ -1,0 +1,6 @@
+---
+- name: create a webserver
+  hosts: webservers
+  roles:
+    - apache
+
