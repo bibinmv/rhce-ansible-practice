@@ -8,9 +8,9 @@
         file: yum
         description: EX294 base software
         enabled: yes
-        baseurl: (given in question)
+        baseurl: http://repo.example.com
         gpgcheck: yes
-        ggpkey: (given in question)
+        ggpkey: http://repo.example.com/RPM-GPG-KEY
 
     - name: create EX294_APP repository
       ansible.builtin.yum_repository:
@@ -18,6 +18,6 @@
         file: yum
         description: EX294 app software
         enabled: yes
-        baseurl: (given in question)
+        baseurl: http://repo.example.com
         gpgcheck: yes
-        ggpkey: (given in question)
+        ggpkey: http://repo.example.com/RPM-GPG-KEY
